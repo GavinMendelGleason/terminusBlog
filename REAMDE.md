@@ -58,9 +58,162 @@ Not much to a page! Just a timeless post.
 
 And a site map is just a set of items, with a name and location.
 
-We can put all of this in a file, [schema.json](schema.json) and 
+We can put all of this in a file, [schema.json](schema.json) and then (assuming we've already installed TerminusDB) load it with the command:
+
+```shell
+terminusdb store init
+terminusdb db create admin/blog
+terminusdb doc insert admin/blog -g schema -f < schema.json
+```
+
+Terminus will respond with:
+
+```
+Documents inserted:
+ 1: Author
+ 2: Post
+ 3: Page
+ 4: SiteMap
+ 5: SiteItem
+```
 
 ## Layout
 
 Now we want to actually design our website. First, let's create a
 basic structure.
+
+Assuming you have [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed, you can run the following to start a react app.
+
+```shell
+npx create-react-app blog
+```
+
+I would also like to use GraphQL, so I'll install the Apollo client.
+
+```shell
+npm install @apollo/client
+```
+
+Now we're basically ready to go, we just need to edit or `App.js` file
+and give ourselves a river of news.
+
+My App.js file, I've edited to look like this:
+
+```js
+import './App.css';
+
+import { ApolloClient,ApolloLink, concat, InMemoryCache, ApolloProvider,
+         gql, HttpLink, useQuery } from '@apollo/client';
+
+const httpLink = new HttpLink({ uri: "http://localhost:6363/api/graphql/admin/blog" });
+
+const POST_QUERY = gql`
+ query PostQuery($offset: Int, $limit: Int) {
+    Post(offset: $offset, limit: $limit, orderBy: { date : ASC }) {
+        date
+        title
+        content
+    }
+}`
+
+const authMiddleware = new ApolloLink((operation, forward) => {
+  // add the authorization to the headers
+  operation.setContext(({ headers = {} }) => ({
+    headers: {
+      ...headers,
+      authorization: "Basic YWRtaW46cm9vdA==",
+    }
+
+  }));
+  return forward(operation);
+})
+
+const ComposedLink = concat(authMiddleware, httpLink)
+
+const cache = new InMemoryCache({
+  addTypename: false,
+});
+
+const client = new ApolloClient({
+  cache: cache,
+  link: ComposedLink,
+});
+
+function Posts() {
+  const { loading, error, data } = useQuery(POST_QUERY, {variables:{offset:0 , limit:10}});
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
+  return (
+    <div name='post'>
+      {data.Post.map((post) => (
+        <div id={post['@id']}>
+          <p>
+            <span style={{marginRight:"5px"}}>{post.title}</span> {post.date}
+          </p>
+          <p>
+           {post.content}
+          </p>
+       </div>
+      ))}
+    </div>
+  );
+}
+
+function App() {
+  return (
+  <div className="App">
+      <p>
+          Gavin's Technical Blog
+      </p>
+      <ApolloProvider client={client}>
+        <Posts />
+      </ApolloProvider>
+  </div>
+  );
+}
+export default App;
+```
+
+Ok, so there is some boiler plate.
+
+Notice, we've imported some Apollo client stuff. We also set our
+graphql server to be where we will put our TerminusDB server, at
+localhost, with the endpoint pointing at our data product
+(`admin/blog`).
+
+The query for posts is the following bit of GraphQL:
+
+```graphql
+const POST_QUERY = gql`
+ query PostQuery($offset: Int, $limit: Int) {
+    Post(offset: $offset, limit: $limit, orderBy: { date : ASC }) {
+        date
+        title
+        content
+    }
+}`
+```
+
+The function `Posts` retrieves the data, and returns it as renderable
+elements.
+
+## Getting Some Data In
+
+Now, we need to get some data in. The easiest way is probably to just
+go to the TerminusDB dashboard and enter it there at
+[http://127.0.0.1:6363/dashboard/admin/blog](http://127.0.0.1:6363/dashboard/admin/blog).
+
+We can click over to our documents panel, which is available from the
+document icon on the left, and then click posts and start editing!
+
+## Rendering
+
+However, I'd like to be able to write my blogs with some
+formatting. To do this, I'm going to use a markdown formatter, since I
+hate word processors and HTML equally.
+
+We will use react markdown
+
+```shell
+npm install react-markdown
+```

@@ -1,12 +1,12 @@
 [
     { "@type" : "@context",
       "@base" : "iri://data/",
-      "@schema" : "iri://schema#",
+      "@schema" : "iri://schema#"
     },
     { "@type" : "Class",
       "@id" : "Author",
       "name" : "xsd:string",
-      "avatar" : "xsd:anyURI"
+      "avatar" : "xsd:anyURI",
       "bio" : "xsd:string"
     },
     { "@type" : "Class",

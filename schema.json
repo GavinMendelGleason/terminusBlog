@@ -1,0 +1,33 @@
+[
+    { "@type" : "@context",
+      "@base" : "iri://data/",
+      "@schema" : "iri://schema#",
+    },
+    { "@type" : "Class",
+      "@id" : "Author",
+      "name" : "xsd:string",
+      "avatar" : "xsd:anyURI"
+      "bio" : "xsd:string"
+    },
+    { "@type" : "Class",
+      "@id" : "Post",
+      "title" : "xsd:string",
+      "content" : "xsd:string",
+      "date" : "xsd:dateTime",
+      "author" : { "@type" : "Set", "@class" : "Author" }
+    },
+    { "@type" : "Class",
+      "@id" : "Page",
+      "title" : "xsd:string",
+      "content" : "xsd:string"
+    },
+    { "@type" : "Class",
+      "@id" : "SiteMap",
+      "items" : { "@type" : "Set", "@class" : "SiteItem" }
+    },
+    { "@type" : "Class",
+      "@id" : "SiteItem",
+      "name" : "xsd:string",
+      "location" : "xsd:anyURI"
+    }
+]

@@ -11,6 +11,7 @@
     },
     { "@type" : "Class",
       "@id" : "Post",
+      "@key": { "@type" : "Lexical", "@fields" : ["title"]},
       "title" : "xsd:string",
       "content" : "xsd:string",
       "date" : "xsd:dateTime",

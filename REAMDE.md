@@ -100,78 +100,6 @@ and give ourselves a river of news.
 My App.js file, I've edited to look like this:
 
 ```js
-import './App.css';
-
-import { ApolloClient,ApolloLink, concat, InMemoryCache, ApolloProvider,
-         gql, HttpLink, useQuery } from '@apollo/client';
-
-const httpLink = new HttpLink({ uri: "http://localhost:6363/api/graphql/admin/blog" });
-
-const POST_QUERY = gql`
- query PostQuery($offset: Int, $limit: Int) {
-    Post(offset: $offset, limit: $limit, orderBy: { date : ASC }) {
-        date
-        title
-        content
-    }
-}`
-
-const authMiddleware = new ApolloLink((operation, forward) => {
-  // add the authorization to the headers
-  operation.setContext(({ headers = {} }) => ({
-    headers: {
-      ...headers,
-      authorization: "Basic YWRtaW46cm9vdA==",
-    }
-
-  }));
-  return forward(operation);
-})
-
-const ComposedLink = concat(authMiddleware, httpLink)
-
-const cache = new InMemoryCache({
-  addTypename: false,
-});
-
-const client = new ApolloClient({
-  cache: cache,
-  link: ComposedLink,
-});
-
-function Posts() {
-  const { loading, error, data } = useQuery(POST_QUERY, {variables:{offset:0 , limit:10}});
-  if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
-  return (
-    <div name='post'>
-      {data.Post.map((post) => (
-        <div id={post['@id']}>
-          <p>
-            <span style={{marginRight:"5px"}}>{post.title}</span> {post.date}
-          </p>
-          <p>
-           {post.content}
-          </p>
-       </div>
-      ))}
-    </div>
-  );
-}
-
-function App() {
-  return (
-  <div className="App">
-      <p>
-          Gavin's Technical Blog
-      </p>
-      <ApolloProvider client={client}>
-        <Posts />
-      </ApolloProvider>
-  </div>
-  );
-}
-export default App;
 ```
 
 Ok, so there is some boiler plate.
@@ -216,4 +144,12 @@ We will use react markdown
 
 ```shell
 npm install react-markdown
+```
+
+## Syntax highlighting
+
+
+```
+npm install react-syntax-highlighter
+npm install parse-numeric-range
 ```

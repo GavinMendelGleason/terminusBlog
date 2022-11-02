@@ -134,6 +134,11 @@ go to the TerminusDB dashboard and enter it there at
 We can click over to our documents panel, which is available from the
 document icon on the left, and then click posts and start editing!
 
+## Routing
+```shell
+npm install react-router-dom
+```
+
 ## Rendering
 
 However, I'd like to be able to write my blogs with some

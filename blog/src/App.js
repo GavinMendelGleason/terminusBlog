@@ -1,8 +1,11 @@
 import './App.css';
+/* Markdown */
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rangeParser from 'parse-numeric-range'
+/* GraphQL */
 import { ApolloClient,ApolloLink, concat, InMemoryCache, ApolloProvider,
          gql, HttpLink, useQuery } from '@apollo/client';
-import rangeParser from 'parse-numeric-range'
 
 /* Syntax highlighting */
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -17,6 +20,7 @@ import graphql from 'react-syntax-highlighter/dist/cjs/languages/prism/graphql'
 import turtle from 'react-syntax-highlighter/dist/cjs/languages/prism/turtle'
 
 SyntaxHighlighter.registerLanguage('turtle', turtle)
+SyntaxHighlighter.registerLanguage('ttl', turtle)
 SyntaxHighlighter.registerLanguage('javascript', javascript)
 SyntaxHighlighter.registerLanguage('scss', scss)
 SyntaxHighlighter.registerLanguage('bash', bash)
@@ -29,8 +33,7 @@ SyntaxHighlighter.registerLanguage('graphql', graphql)
 const syntaxTheme = oneDark
 const MarkdownComponents = {
     code({ node, inline, className, ...props }) {
-      const match = /language-(\w+)/.exec(className || '')
-      console.log(match);
+      const match = /language-(\w+)|(diagram)/.exec(className || '')
       const hasMeta = node?.data?.meta
 
       const applyHighlights  = (applyHighlights) => {
@@ -50,6 +53,7 @@ const MarkdownComponents = {
           return {}
         }
       }
+      console.log(hasMeta)
       return match ? (
           <SyntaxHighlighter
            style={syntaxTheme}
@@ -62,15 +66,16 @@ const MarkdownComponents = {
            {...props}
         />
       ) : (
+          <code className={className} {...props} />
+        /*
         <SyntaxHighlighter
            style={syntaxTheme}
            language="diagram"
-           PreTag="div"
            className="codeStyle"
            showLineNumbers={false}
            useInlineStyles={true}
         {...props}
-        />
+        />*/
       )
     },
 }
@@ -182,10 +187,9 @@ function Post() {
         return (
         <div id={id}>
             <span><h2>{post.title}</h2></span><em>{date_time}</em>
-            <ReactMarkdown components={MarkdownComponents}>
+            <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>
               {content}
             </ReactMarkdown>
-       <hr />
        </div>
       )})}
     </div>

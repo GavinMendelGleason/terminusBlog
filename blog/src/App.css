@@ -1,12 +1,12 @@
 
 @media (prefers-color-scheme: dark) {
   body {
-    color: #eee;
-    background: #191919;
+    color: #d8dff0;
+    background: #2f3044;
   }
 
   a {
-    color: #809fff;
+    color: #3dffc5;
   }
 }
 
@@ -17,16 +17,26 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #2f3044;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  font-family: "JetBrains Mono",Menlo,Monaco,"Courier New",monospace;
+  font-size: 100%;
+  color: #d8dff0;
 }
 
 .App-link {
   color: #61dafb;
+}
+
+table, td, thead th, tbody + tbody {
+  border: 1px solid;
+  border-color:  #d8dff0;
+}
+
+td {
+    padding: 5px;
 }

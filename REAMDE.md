@@ -112,14 +112,14 @@ localhost, with the endpoint pointing at our data product
 The query for posts is the following bit of GraphQL:
 
 ```graphql
-const POST_QUERY = gql`
- query PostQuery($offset: Int, $limit: Int) {
-    Post(offset: $offset, limit: $limit, orderBy: { date : ASC }) {
+ query PostsQuery($offset: Int, $limit: Int) {
+    Post(offset: $offset, limit: $limit, orderBy: { date : DESC }) {
+        id
         date
         title
         content
     }
-}`
+}
 ```
 
 The function `Posts` retrieves the data, and returns it as renderable
@@ -150,6 +150,7 @@ npm install react-markdown
 
 
 ```
+npm install remark-gfm
 npm install react-syntax-highlighter
 npm install parse-numeric-range
 ```

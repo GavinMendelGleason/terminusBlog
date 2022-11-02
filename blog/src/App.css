@@ -16,6 +16,27 @@
   /* text-align: center; */
 }
 
+table.blogTable {
+    border: none;
+}
+
+td.blogImage {
+    border: none;
+    width: 40%;
+}
+
+td.blogData {
+    border: none;
+}
+
+img.Thumbnail {
+    border: none;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+}
+
 .App-header {
   background-color: #2f3044;
   min-height: 100vh;

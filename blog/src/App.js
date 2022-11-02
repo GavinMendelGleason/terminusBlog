@@ -91,6 +91,10 @@ const POSTS_QUERY = gql`
         date
         title
         content
+        feature {
+           alt
+           location
+        }
     }
 }`
 
@@ -149,8 +153,9 @@ const client = new ApolloClient({
 });
 
 /* Text Processing */
-function snippit(content, size=10) {
-  content = content.replace(/```[^`]*```/,'')
+function snippit(content, size=20) {
+  content = content.replace(/!\[[^\]]*\]\([^\)]*\)/g,'')
+  content = content.replace(/```[^`]*```/g,'')
   const matcher = new RegExp(`^(.*\n){0,${size}}`, 'g')
   const result = matcher.exec(content)
   if(result !== null) {
@@ -219,6 +224,12 @@ const next_path = `/p/${next_page_number}`
   )
 }
 
+function Image(image){
+  return (
+    <td className='blogImage' ><img className='Thumbnail' src={image.location} alt={image.alt} /></td>
+  )
+}
+
 function PostRiver() {
   const offsets = get_offsets()
   const { loading, error, data } = useQuery(POSTS_QUERY, {variables:offsets});
@@ -227,20 +238,29 @@ function PostRiver() {
   return (
     <div>
       <div name='post_river'>
-        {data.Post.map((post) => {
+      {data.Post.map((post) => {
+          console.log(post)
           const date_time_obj = new Date(post.date);
           var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
           var date_time = date_time_obj.toLocaleDateString("en-US", options)
           var id = post.id.replace(/^iri:\/\/data/, '')
           var path = `.${id}`
           var content = snippit(post.content) + `... **[see more](${path})**`
+          var image = post.feature ? Image(post.feature) : ''
           return (
-           <div key={id} id={id}>
-            <span><h2><a href={path}>{post.title}</a></h2></span><em>{date_time}</em>
-            <ReactMarkdown components={MarkdownComponents}>
-              {content}
-            </ReactMarkdown>
-            <hr />
+           <div key={id} id={id} name='BlogCard'>
+             <table className='blogTable'>
+              <tr>
+                <td className='blogData'>
+                  <span><h2><a href={path}>{post.title}</a></h2></span><em>{date_time}</em>
+                  <ReactMarkdown components={MarkdownComponents}>
+                  {content}
+                  </ReactMarkdown>
+                </td>
+                {image}
+              </tr>
+             </table>
+             <hr />
           </div>
           )})}
       </div>

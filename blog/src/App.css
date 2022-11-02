@@ -85,8 +85,12 @@ img.Thumbnail {
   float: right;
 }
 
+th, td {
+    padding: 10px;
+    margin: 0px;
+    border: 1px solid;
+}
 table, td, thead th, tbody + tbody {
-  border: 1px solid;
   border-color:  #d8dff0;
 }
 

@@ -1,13 +1,10 @@
-
-@media (prefers-color-scheme: dark) {
-  body {
+body {
     color: #d8dff0;
     background: #2f3044;
-  }
+}
 
-  a {
+a {
     color: #3dffc5;
-  }
 }
 
 .App {
@@ -27,6 +24,10 @@ td.blogImage {
 
 td.blogData {
     border: none;
+}
+
+img {
+    max-width: 100%;
 }
 
 img.Thumbnail {

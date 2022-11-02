@@ -244,7 +244,7 @@ function PostRiver() {
           var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
           var date_time = date_time_obj.toLocaleDateString("en-US", options)
           var id = post.id.replace(/^iri:\/\/data/, '')
-          var path = `.${id}`
+          var path = `${id}`
           var content = snippit(post.content) + `... **[see more](${path})**`
           var image = post.feature ? Image(post.feature) : ''
           return (

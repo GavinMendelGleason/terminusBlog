@@ -3,6 +3,9 @@ import './App.css';
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rangeParser from 'parse-numeric-range'
+/* Loading Spinner */
+import ClipLoader from 'react-spinners/ClipLoader';
+//import LoadingIcons from 'react-loading-icons'
 /* GraphQL */
 import { ApolloClient,ApolloLink, concat, InMemoryCache, ApolloProvider,
          gql, HttpLink, useQuery } from '@apollo/client'
@@ -83,7 +86,30 @@ const MarkdownComponents = {
 
 /* GraphQL Boilerplate */
 const httpLink = new HttpLink({ uri: "http://localhost:6363/api/graphql/admin/blog" });
+const authMiddleware = new ApolloLink((operation, forward) => {
+  // add the authorization to the headers
+  operation.setContext(({ headers = {} }) => ({
+    headers: {
+      ...headers,
+      authorization: "Basic YWRtaW46cm9vdA==",
+    }
 
+  }));
+  return forward(operation);
+})
+
+const ComposedLink = concat(authMiddleware, httpLink)
+
+const cache = new InMemoryCache({
+  addTypename: false,
+});
+
+const client = new ApolloClient({
+  cache: cache,
+  link: ComposedLink,
+});
+
+/* GraphQL Queries */
 const POSTS_QUERY = gql`
  query PostsQuery($offset: Int, $limit: Int) {
     Post(offset: $offset, limit: $limit, orderBy: { date : DESC }) {
@@ -129,29 +155,6 @@ const PAGE_QUERY = gql`
     }
 }`
 
-const authMiddleware = new ApolloLink((operation, forward) => {
-  // add the authorization to the headers
-  operation.setContext(({ headers = {} }) => ({
-    headers: {
-      ...headers,
-      authorization: "Basic YWRtaW46cm9vdA==",
-    }
-
-  }));
-  return forward(operation);
-})
-
-const ComposedLink = concat(authMiddleware, httpLink)
-
-const cache = new InMemoryCache({
-  addTypename: false,
-});
-
-const client = new ApolloClient({
-  cache: cache,
-  link: ComposedLink,
-});
-
 /* Text Processing */
 function snippit(content, size=20) {
   content = content.replace(/!\[[^\]]*\]\([^\)]*\)/g,'')
@@ -166,13 +169,24 @@ function snippit(content, size=20) {
 }
 
 /* The App */
+/*function Loading() {
+  return (
+        <LoadingIcons.Hearts stroke="#3dffc5" fill="#3dffc5" alignment-baseline="central" />
+  )
+}*/
+
 function Loading() {
-  return <div name='loading'>Loading...</div>
+  const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+  return (
+      <div style={style}>
+        <ClipLoader color="#3dffc5" />
+      </div>
+  )
 }
 
 function SiteMap() {
   const { loading, error, data } = useQuery(SITEMAP_QUERY);
-  if (loading) return <Loading />;
+  if (loading) return <div className='topnav'><Loading /></div>;
   if (error) return `Error! ${error.message}`;
   const SiteItems = data.SiteMap[0].items
   return (
@@ -274,7 +288,7 @@ function Post() {
   var id = path.substring(1,path.length)
   id = "iri://data/" + id
   const { loading, error, data } = useQuery(POST_QUERY, {variables:{id:id}});
-  if (loading) return 'Loading...';
+  if (loading) return <Loading />
   if (error) return `Error! ${error.message}`;
   return (
     <div name='post'>

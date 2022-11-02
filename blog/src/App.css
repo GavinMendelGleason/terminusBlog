@@ -10,7 +10,9 @@ a {
 .App {
     margin-left: 10%;
     margin-right: 10%;
-  /* text-align: center; */
+    font-size: 20px;
+    font-family: "Roboto",monospace;
+    font-weight: semibold;
 }
 
 table.blogTable {

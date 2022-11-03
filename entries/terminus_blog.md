@@ -4,8 +4,25 @@ How easy is it to make a blog-focused CMS in TerminusDB?
 
 Very!
 
-This project is designed to show how you can build a custom web-app
-using TerminusDB from scratch with little effort.
+This
+[terminusBlog](https://github.com/GavinMendelGleason/terminusBlog) is
+designed to show how easy it is to build a custom web-app using
+TerminusDB from scratch.
+
+You should be able to clone the repository and run it locally provided
+you have
+[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+and [terminusdb](https://github.com/terminusdb/terminusdb) installed.
+
+Just run:
+
+```shell
+make
+npm start & terminusdb serve &
+```
+
+And you should be able to view the blog at `localhost:3000`. The
+TerminusDB backend will be available at `localhost:6363`.
 
 ## The Schema
 

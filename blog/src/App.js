@@ -140,7 +140,6 @@ query SitemapQuery {
         items(orderBy: { order : ASC }) {
            id
            name
-           order
            location
         }
     }

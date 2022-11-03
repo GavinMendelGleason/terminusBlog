@@ -68,7 +68,7 @@ terminusdb doc insert admin/blog -g schema -f < schema.json
 
 Terminus will respond with:
 
-```
+```shell
 Documents inserted:
  1: Author
  2: Post
@@ -94,15 +94,92 @@ I would also like to use GraphQL, so I'll install the Apollo client.
 npm install @apollo/client
 ```
 
-Now we're basically ready to go, we just need to edit or `App.js` file
-and give ourselves a river of news.
+And since I hate writing HTML, and write all of my blogs in Markdown,
+I'm going to use a Markdown renderer.
 
-My App.js file, I've edited to look like this:
-
-```js
+```shell
+npm install react-markdown
+npm install remark-gfm
+npm install react-syntax-highlighter
+npm install parse-numeric-range
 ```
 
-Ok, so there is some boiler plate.
+React markdown is really great. It makes your source code look very
+readable and deals with a wide variety of formats.
+
+
+Now we're basically ready to go, we just need to edit our [App.js](../assets/App.js) file
+and give ourselves a river of news.
+
+```jsx
+function PostRiver() {
+  const offsets = get_offsets()
+  const { loading, error, data } = useQuery(POSTS_QUERY, {variables:offsets});
+  if (loading) return <Loading />;
+  if (error) return `Error! ${error.message}`;
+  return (
+    <div>
+      <div name='post_river'>
+      {data.Post.map((post) => {
+          console.log(post)
+          const date_time_obj = new Date(post.date);
+          var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+          var date_time = date_time_obj.toLocaleDateString("en-US", options)
+          var id = post.id.replace(/^iri:\/\/data/, '')
+          var path = `${id}`
+          var content = snippit(post.content) + `... **[see more](${path})**`
+          var image = post.feature ? Image(post.feature) : ''
+          return (
+           <div key={id} id={id} name='BlogCard'>
+             <table className='blogTable'>
+              <tr>
+                <td className='blogData'>
+                  <span><h2><a href={path}>{post.title}</a></h2></span><em>{date_time}</em>
+                  <ReactMarkdown components={MarkdownComponents}>
+                  {content}
+                  </ReactMarkdown>
+                </td>
+                {image}
+              </tr>
+             </table>
+             <hr />
+          </div>
+          )})}
+      </div>
+      <More />
+    </div>
+  );
+}
+```
+
+Ok, so that has a lot in it.
+
+## Router
+
+```shell
+npm install react-router-dom
+```
+
+We can also make use of a router. First install 
+
+My [App.js](../assets/App.js) file, I've edited it to use a router.
+
+```js
+function App() {
+  let routes = useRoutes([
+    { path: "/", element: <Posts /> },
+    { path: "p", children : [
+       { path: ":page", element: <Posts /> }]},
+    { path: "Post", children : [
+       { path: ":id", element: <SinglePost /> }]},
+    { path: "Page", children : [
+       { path: ":id", element: <SinglePage /> }]}
+  ]);
+  return routes;
+}
+```
+
+###
 
 Notice, we've imported some Apollo client stuff. We also set our
 graphql server to be where we will put our TerminusDB server, at
@@ -134,10 +211,6 @@ go to the TerminusDB dashboard and enter it there at
 We can click over to our documents panel, which is available from the
 document icon on the left, and then click posts and start editing!
 
-## Routing
-```shell
-npm install react-router-dom
-```
 
 ## Rendering
 

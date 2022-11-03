@@ -57,7 +57,6 @@ const MarkdownComponents = {
           return {}
         }
       }
-      console.log(hasMeta)
       return match ? (
           <SyntaxHighlighter
            style={syntaxTheme}
@@ -232,7 +231,7 @@ function More(){
 const next_path = `/p/${next_page_number}`
   return (
       <div key="more" name="morePosts">
-        {data.Post.map((post) => <a href={next_path}>More posts</a>)}
+        {data.Post.map((post) => <a key="more_ref" href={next_path}>More posts</a>)}
       </div>
   )
 }
@@ -252,7 +251,6 @@ function PostRiver() {
     <div>
       <div name='post_river'>
       {data.Post.map((post) => {
-          console.log(post)
           const date_time_obj = new Date(post.date);
           var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
           var date_time = date_time_obj.toLocaleDateString("en-US", options)
@@ -263,6 +261,7 @@ function PostRiver() {
           return (
            <div key={id} id={id} name='BlogCard'>
              <table className='blogTable'>
+              <tbody>
               <tr>
                 <td className='blogData'>
                   <span><h2><a href={path}>{post.title}</a></h2></span><em>{date_time}</em>
@@ -272,6 +271,7 @@ function PostRiver() {
                 </td>
                 {image}
               </tr>
+              </tbody>
              </table>
              <hr />
           </div>
@@ -314,7 +314,6 @@ function Post() {
 function Page() {
   var path = window.location.pathname
   var id = path.substring(1,path.length)
-  console.log(id)
   id = "iri://data/" + id
   const { loading, error, data } = useQuery(PAGE_QUERY, {variables:{id:id}});
   if (loading) return 'Loading...';
@@ -323,7 +322,6 @@ function Page() {
     <div name='page'>
       <SiteMap />
       {data.Page.map((page) => {
-        console.log(data)
         var id = page.id.replace(/^iri:\/\/data/, '')
         var content = page.content
         return (

@@ -12,11 +12,11 @@ for entry in os.scandir('./entries'):
     if match:
         name = re.sub('^# ','',match[0])
         name = re.sub('\[([^\]]*)\]\([^\)]*\)', '\\1', name)
-        print(name)
+        name = re.sub('\n.*','',name)
         content = re.sub(match[0],'',content)
     else:
         name = entry.name
-
+    print(f"Processing title: {name}")
     image_re = re.compile(r'!\[([^\]]*)\]\(([^\)]*)\)', re.MULTILINE)
     image_matches = image_re.findall(content)
     if image_matches != []:

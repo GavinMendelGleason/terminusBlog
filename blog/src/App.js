@@ -112,7 +112,7 @@ const client = new ApolloClient({
 const POSTS_QUERY = gql`
  query PostsQuery($offset: Int, $limit: Int) {
     Post(offset: $offset, limit: $limit, orderBy: { date : DESC }) {
-        id
+        _id
         date
         title
         content
@@ -126,7 +126,7 @@ const POSTS_QUERY = gql`
 const POST_QUERY = gql`
  query PostQuery($id: ID) {
     Post(id: $id) {
-        id
+        _id
         date
         title
         content
@@ -137,7 +137,7 @@ const SITEMAP_QUERY = gql`
 query SitemapQuery {
     SiteMap {
         items(orderBy: { order : ASC }) {
-           id
+           _id
            name
            location
         }
@@ -147,7 +147,7 @@ query SitemapQuery {
 const PAGE_QUERY = gql`
  query PageQuery($id: ID) {
     Page(id: $id) {
-        id
+        _id
         title
         content
     }
@@ -254,7 +254,7 @@ function PostRiver() {
           const date_time_obj = new Date(post.date);
           var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
           var date_time = date_time_obj.toLocaleDateString("en-US", options)
-          var id = post.id.replace(/^iri:\/\/data/, '')
+          var id = post._id.replace(/^iri:\/\/data/, '')
           var path = `${id}`
           var content = snippit(post.content) + `... **[see more](${path})**`
           var image = post.feature ? Image(post.feature) : ''
@@ -297,7 +297,7 @@ function Post() {
         const date_time_obj = new Date(post.date);
         var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
         var date_time = date_time_obj.toLocaleDateString("en-US", options)
-        var id = post.id.replace(/^iri:\/\/data/, '')
+        var id = post._id.replace(/^iri:\/\/data/, '')
         var content = post.content
         return (
           <div key={id} id={id}>

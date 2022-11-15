@@ -82,7 +82,12 @@ Documents inserted:
 Now we want to actually design our website. First, let's create a
 basic structure.
 
-Assuming you have [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed, you can run the following to start a react app.
+Assuming you have
+[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+installed, you can run the following to start a react app.
+
+You don't need to do anything in the layout section, since I've
+already done it!
 
 ```shell
 npx create-react-app blog

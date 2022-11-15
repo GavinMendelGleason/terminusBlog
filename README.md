@@ -167,7 +167,7 @@ We do a GraphQL query to get the posts we are interested in, namely:
 ```graphql
  query PostsQuery($offset: Int, $limit: Int) {
     Post(offset: $offset, limit: $limit, orderBy: { date : DESC }) {
-        id
+        _id
         date
         title
         content
@@ -219,7 +219,7 @@ get them back as an ordered list.
 query SitemapQuery {
     SiteMap {
         items(orderBy: { order : ASC }) {
-           id
+           _id
            name
            location
         }
